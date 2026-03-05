@@ -1,4 +1,4 @@
-class row:
+class entry:
     animal: str = ""
     age: int = 0
     adopted: bool = False

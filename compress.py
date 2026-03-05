@@ -1,17 +1,17 @@
 from io import TextIOWrapper
 
-from row import row
+from row import entry
 
 
-def readFile(name: str) -> list[row]:
+def readFile(name: str) -> list[entry]:
     """returns a list of lists that consist a str, int bool each
     Ex "bird,84,False" -> ["bird", 84, False]
     this will make logic easier later down the line"""
     f: TextIOWrapper = open(name, "r")
-    return [row(entry.split(",")) for entry in f.read().splitlines()]
+    return [entry(line.split(",")) for line in f.read().splitlines()]
 
 
-def toFile(arr: list[row], fileName: str) -> None:
+def toFile(arr: list[entry], fileName: str) -> None:
     f = open(fileName, "w")
     for i in arr:
         f.write(i.toBin() + "\n")
