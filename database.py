@@ -5,7 +5,8 @@ class db:
     rows: list[entry] = []
     bitmap: list[str] = []
     compressOrder: str = ""
-    wordSize: int
+    wordSize: int = 8
+    words: list[str] = []
 
     def __init__(self, file: str):
         f = open(file, "r")
@@ -34,3 +35,9 @@ class db:
             for j in range(len(self.bitmap)):
                 result += self.bitmap[j][i]
         self.compressOrder = result
+
+    def getWords(self) -> None:
+        self.words = [
+            str(self.compressOrder[i : i + self.wordSize - 1])
+            for i in range(0, len(self.bitmap), self.wordSize - 1)
+        ]

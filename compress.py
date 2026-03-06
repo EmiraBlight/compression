@@ -1,7 +1,8 @@
 from database import db
 
-d = db("data/animals_sorted.txt")
+d = db("data/animals_small.txt")
 # print(d)
 d.toBin("test")
 d.getOrder()
-print(d.compressOrder)
+d.getWords()
+print(d.words)
