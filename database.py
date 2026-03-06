@@ -2,8 +2,10 @@ from row import entry
 
 
 class db:
-    rows: list[entry]
-    bitmap: list[str]
+    rows: list[entry] = []
+    bitmap: list[str] = []
+    compressOrder: str = ""
+    wordSize: int
 
     def __init__(self, file: str):
         f = open(file, "r")
@@ -18,8 +20,17 @@ class db:
             result += "-" * 50 + "\n"
         return result
 
-    def toBin(self, file):
+    def toBin(self, file) -> None:
         f = open(file, "w")
         for i in self.bitmap:
             f.write(i + "\n")
         f.close()
+
+    def getOrder(self) -> None:
+        result = ""
+        if self.bitmap == []:
+            raise Exception("bitmap not defined or database is empty!")
+        for i in range(16):
+            for j in range(len(self.bitmap)):
+                result += self.bitmap[j][i]
+        self.compressOrder = result
