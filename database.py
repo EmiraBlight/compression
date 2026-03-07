@@ -32,13 +32,13 @@ class db:
         f.close()
 
     def getOrder(self) -> None:
-        result = ""
-        if self.bitmap == []:
-            raise Exception("bitmap not defined or database is empty!")
-        for i in range(16):
-            for j in range(len(self.bitmap)):
-                result += self.bitmap[j][i]
-        self.compressOrder = result
+
+        transpose = list(zip(*self.bitmap))
+        line = ["".join(i) for i in transpose]
+
+        another = "".join(line)
+
+        self.compressOrder = another
 
     def getWords(self) -> None:
         self.words = [
@@ -54,12 +54,13 @@ class db:
         run_type: None | str = None
 
         for string in self.words:
-            print(string)
+            if len(string) != self.wordSize - 1:
+                string = string.ljust(self.wordSize - 1, "0")
+
             if in_run and run_type:
                 if self.isRun(string):
                     if string[0] == run_type:
                         run_len += 1
-
                         if len(bin(run_len)) > self.wordSize:
                             result += (
                                 "1" + run_type + f"{run_len:0{self.wordSize - 2}b}"
@@ -82,5 +83,4 @@ class db:
                     run_type = string[0]
                 else:
                     result += "0" + string
-
-        # print(result)
+        print(result)
