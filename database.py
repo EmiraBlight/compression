@@ -54,16 +54,16 @@ class db:
         run_type: None | str = None
         for col in self.words:
             result = ""
+            run_type = None
+            run_len = 0
+            in_run = False
             for word in col:
                 if len(word) != self.wordSize - 1:
                     if in_run and run_type:
                         result += "1" + run_type + f"{run_len:0{self.wordSize - 2}b}"
-                        run_type = None
-                        run_len = 0
-                        in_run = False
 
                     result += "0" + word + "0" * (self.wordSize - len(word) - 1)
-
+                    break
                 elif in_run and run_type:
                     if self.isRun(word):
                         if word[0] == run_type:
@@ -78,6 +78,7 @@ class db:
                                 "1" + run_type + f"{run_len:0{self.wordSize - 2}b}"
                             )
                             run_type = word[0]
+                            run_len = 1
                     else:
                         result += "1" + run_type + f"{run_len:0{self.wordSize - 2}b}"
                         result += "0" + word
@@ -92,4 +93,8 @@ class db:
                         run_type = word[0]
                     else:
                         result += "0" + word
+
+            else:
+                if run_type:
+                    result += "1" + run_type + f"{run_len:0{self.wordSize - 2}b}"
             print(result)

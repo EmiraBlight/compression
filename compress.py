@@ -1,6 +1,6 @@
 from database import db
 
-d = db("data/animals_sorted.txt")
+d = db("data/animals_small.txt")
 # print(d)
 d.getWords()
 d.wah()
