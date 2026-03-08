@@ -68,7 +68,7 @@ class db:
                     if self.isRun(word):
                         if word[0] == run_type:
                             run_len += 1
-                            if len(bin(run_len)) > self.wordSize:
+                            if len(bin(run_len + 1)) > self.wordSize:
                                 result += (
                                     "1" + run_type + f"{run_len:0{self.wordSize - 2}b}"
                                 )
