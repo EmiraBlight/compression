@@ -31,20 +31,20 @@ class db:
             f.write(i + "\n")
         f.close()
 
-    def getOrder(self) -> None:
+    def getWords(self) -> None:
 
         transpose = list(zip(*self.bitmap))
         line = ["".join(i) for i in transpose]
+        new_arr = []
+        for col in line:
+            new_arr.append(
+                [
+                    col[i : i + self.wordSize - 1]
+                    for i in range(0, len(col), self.wordSize - 1)
+                ]
+            )
 
-        another = "".join(line)
-
-        self.compressOrder = another
-
-    def getWords(self) -> None:
-        self.words = [
-            str(self.compressOrder[i : i + self.wordSize - 1])
-            for i in range(0, len(self.compressOrder), self.wordSize - 1)
-        ]
+        self.words = new_arr
 
     def wah(self):
         self.getWords()
@@ -52,35 +52,44 @@ class db:
         in_run: bool = False
         run_len: int = 0
         run_type: None | str = None
+        for col in self.words:
+            result = ""
+            for word in col:
+                if len(word) != self.wordSize - 1:
+                    if in_run and run_type:
+                        result += "1" + run_type + f"{run_len:0{self.wordSize - 2}b}"
+                        run_type = None
+                        run_len = 0
+                        in_run = False
 
-        for string in self.words:
-            if len(string) != self.wordSize - 1:
-                string = string.ljust(self.wordSize - 1, "0")
+                    result += "0" + word + "0" * (self.wordSize - len(word) - 1)
 
-            if in_run and run_type:
-                if self.isRun(string):
-                    if string[0] == run_type:
-                        run_len += 1
-                        if len(bin(run_len)) > self.wordSize:
+                elif in_run and run_type:
+                    if self.isRun(word):
+                        if word[0] == run_type:
+                            run_len += 1
+                            if len(bin(run_len)) > self.wordSize:
+                                result += (
+                                    "1" + run_type + f"{run_len:0{self.wordSize - 2}b}"
+                                )
+                                run_len = 1
+                        else:
                             result += (
                                 "1" + run_type + f"{run_len:0{self.wordSize - 2}b}"
                             )
-                            run_len = 1
+                            run_type = word[0]
                     else:
                         result += "1" + run_type + f"{run_len:0{self.wordSize - 2}b}"
-                        run_type = string[0]
-                else:
-                    result += "1" + run_type + f"{run_len:0{self.wordSize - 2}b}"
-                    result += "0" + string
-                    run_type = None
-                    in_run = False
-                    run_len = 0
+                        result += "0" + word
+                        run_type = None
+                        in_run = False
+                        run_len = 0
 
-            else:
-                if self.isRun(string):
-                    in_run = True
-                    run_len = 1
-                    run_type = string[0]
                 else:
-                    result += "0" + string
-        print(result)
+                    if self.isRun(word):
+                        in_run = True
+                        run_len = 1
+                        run_type = word[0]
+                    else:
+                        result += "0" + word
+            print(result)
